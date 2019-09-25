@@ -17,88 +17,86 @@
         default: 'arcade',
         arcade: {
           gravity: { y: 200 },
-          debug: true
-       }
-     },
-     scene: {
-      preload: preload,
-      create: create,
-      update: update
-    }
-  };
+          // debug: true
+        }
+      },
+      scene: {
+        preload: preload,
+        create: create,
+        update: update
+      }
+    };
 
-  var winner;
-  var static1;
-  var static2;
-  var static3;
+    var winner;
+    var static1;
+    var static2;
+    var static3;
+    var flop = true;
+    var done = false;
 
-  var game = new Phaser.Game(config);
-  const gameState = {
-    xVelocity: 150,
-    yVelocity: 150
-  };
+    var game = new Phaser.Game(config);
+    const gameState = {
+      xVelocity: 150,
+      yVelocity: 150
+    };
 
-  function preload ()
-  {
-   this.load.image('square', 'assets/square.png');
-   this.load.image('platform', 'assets/platform.png');
- }
+    function preload ()
+    {
+     this.load.image('square', 'assets/square.png');
+     this.load.image('platform', 'assets/platform.png');
+   }
 
- function create ()
- {
+   function create ()
+   {
 
-  gameState.instructions = this.add.text(400, 25, 'Hit Space to Drop', { fontSize: '25px', fill: '#FFFFFF'});
-  gameState.yVelocityText = this.add.text(650, 500, `Y Velocity: ${gameState.yVelocity}`, { fontSize: '25px', fill: '#FFFFFF'});
-  gameState.yMinus = this.add.text(620, 500, '-', { fontSize: '25px', fill: '#FFFFFF'});
-  gameState.yPlus = this.add.text(890, 500, '+', { fontSize: '25px', fill: '#FFFFFF'});
-  gameState.xVelocityText = this.add.text(650, 450, `X Velocity: ${gameState.xVelocity}`, { fontSize: '25px', fill: '#FFFFFF'});
-  gameState.xMinus = this.add.text(620, 450, '-', { fontSize: '25px', fill: '#FFFFFF'});
-  gameState.xPlus = this.add.text(890, 450, '+', { fontSize: '25px', fill: '#FFFFFF'});
+    gameState.instructions = this.add.text(400, 25, 'Hit Space to Drop', { fontSize: '25px', fill: '#FFFFFF'});
+    gameState.yVelocityText = this.add.text(650, 500, `Y Velocity: ${gameState.yVelocity}`, { fontSize: '25px', fill: '#FFFFFF'});
+    gameState.yMinus = this.add.text(620, 500, '-', { fontSize: '25px', fill: '#FFFFFF'});
+    gameState.yPlus = this.add.text(890, 500, '+', { fontSize: '25px', fill: '#FFFFFF'});
+    gameState.xVelocityText = this.add.text(650, 450, `X Velocity: ${gameState.xVelocity}`, { fontSize: '25px', fill: '#FFFFFF'});
+    gameState.xMinus = this.add.text(620, 450, '-', { fontSize: '25px', fill: '#FFFFFF'});
+    gameState.xPlus = this.add.text(890, 450, '+', { fontSize: '25px', fill: '#FFFFFF'});
 
-  gameState.xPlus.setInteractive();
-  gameState.xPlus.on('pointerup', function() {
-    gameState.xVelocity += 5;
-    gameState.xVelocityText.setText(`X Velocity: ${gameState.xVelocity}`); 
-  });
-  gameState.xMinus.setInteractive();
-  gameState.xMinus.on('pointerup', function() {
-    if(gameState.xVelocity  >= 5) {
-      gameState.xVelocity -= 5;
-      gameState.xVelocityText.setText(`X Velocity: ${gameState.xVelocity}`);
-    } 
-  });
-  gameState.yPlus.setInteractive();
-  gameState.yPlus.on('pointerup', function() {
-    gameState.yVelocity += 5;
-    gameState.yVelocityText.setText(`Y Velocity: ${gameState.yVelocity}`); 
-  });
-  gameState.yMinus.setInteractive();
-  gameState.yMinus.on('pointerup', function() {
-     if(gameState.yVelocity  >= 5) {
-    gameState.yVelocity -= 5;
-    gameState.yVelocityText.setText(`Y Velocity: ${gameState.yVelocity}`);
-  }
+    gameState.xPlus.setInteractive();
+    gameState.xPlus.on('pointerup', function() {
+      gameState.xVelocity += 5;
+      gameState.xVelocityText.setText(`X Velocity: ${gameState.xVelocity}`); 
+    });
+    gameState.xMinus.setInteractive();
+    gameState.xMinus.on('pointerup', function() {
+        gameState.xVelocity -= 5;
+        gameState.xVelocityText.setText(`X Velocity: ${gameState.xVelocity}`);
+    });
+    gameState.yPlus.setInteractive();
+    gameState.yPlus.on('pointerup', function() {
+      gameState.yVelocity += 5;
+      gameState.yVelocityText.setText(`Y Velocity: ${gameState.yVelocity}`); 
+    });
+    gameState.yMinus.setInteractive();
+    gameState.yMinus.on('pointerup', function() {
+      gameState.yVelocity -= 5;
+      gameState.yVelocityText.setText(`Y Velocity: ${gameState.yVelocity}`);
   });
 
 
-  this.physics.pause();
-  gameState.sprite = this.physics.add.image(100, 100, 'square');
+    this.physics.pause();
+    gameState.sprite = this.physics.add.image(100, 100, 'square');
 
-  static1 = this.physics.add.staticImage(500, 100, 'platform').setInteractive();
-  static2 = this.physics.add.staticImage(100, 500, 'platform').setInteractive();
-  static3 = this.physics.add.staticImage(400, 300, 'platform').setInteractive();
-  winner = this.physics.add.staticImage(925, 45, 'square').setTint(0xAADAC5);
+    static1 = this.physics.add.staticImage(816, 133, 'platform').setInteractive();
+    static2 = this.physics.add.staticImage(144, 284, 'platform').setInteractive();
+    static3 = this.physics.add.staticImage(492, 197, 'platform').setInteractive();
+    winner = this.physics.add.staticImage(925, 45, 'square').setTint(0xAADAC5);
 
-  gameState.sprite.body.setVelocity(100, 100).setBounce(1, 1).setCollideWorldBounds(true);
-  gameState.cursors = this.input.keyboard.createCursorKeys();
+    gameState.sprite.body.setVelocity(100, 100).setBounce(1, 1).setCollideWorldBounds(true);
+    gameState.cursors = this.input.keyboard.createCursorKeys();
 
-       this.physics.add.collider(gameState.sprite, winner, (player, drop) => {
-        gameState.instructions.setText("You did it!");
-        gameState.instructions.visible = true;
-        console.log('collision');
-        this.physics.pause();
-        winner.visible = false
-      });
+    this.physics.add.collider(gameState.sprite, winner, (player, drop) => {
+      gameState.instructions.setText("You did it! Space for next level.");
+      gameState.instructions.visible = true;
+      this.physics.pause();
+      winner.visible = false;
+      done = true;
+    });
 
    // this.physics.add.collider(gameState.sprite, winner, function (sprite) {
    //  console.log('collision');
@@ -147,17 +145,49 @@
   function update ()
   {
     this.physics.world.collide(gameState.sprite, [ static1, static2, static3 ]);
-    if (gameState.cursors.space.isDown) {
-     gameState.instructions.visible = false;
-     gameState.sprite.body.setVelocity(gameState.xVelocity, gameState.yVelocity);
 
-     this.physics.resume();
-     gameState.xPlus.disableInteractive();
-     gameState.yPlus.disableInteractive();
-     gameState.xMinus.disableInteractive();
-     gameState.yMinus.disableInteractive();
+    if (gameState.cursors.space.isDown) {
+      if (!flop) {
+        if(done) {
+          this.physics.pause();
+          gameState.xPlus.setInteractive();
+          gameState.yPlus.setInteractive();
+          gameState.xMinus.setInteractive();
+          gameState.yMinus.setInteractive();
+
+          static1.setInteractive();
+          static2.setInteractive();
+          static3.setInteractive();
+          winner.x = Phaser.Math.Between(0, 900);
+          winner.y = Phaser.Math.Between(0, 500);
+          winner.visible = true;
+          winner.refreshBody();
+          done = false;
+          gameState.sprite.x = 100;
+          gameState.sprite.y = 100;
+        }
+        else {
+         gameState.instructions.visible = false;
+         gameState.sprite.body.setVelocity(gameState.xVelocity, gameState.yVelocity);
+
+         this.physics.resume();
+         gameState.xPlus.disableInteractive();
+         gameState.yPlus.disableInteractive();
+         gameState.xMinus.disableInteractive();
+         gameState.yMinus.disableInteractive();
+
+         static1.disableInteractive();
+         static2.disableInteractive();
+         static3.disableInteractive();
+       }
+       flop = true
+     }
+
    }
- }
+   if (gameState.cursors.space.isUp) {
+    flop = false;
+  }
+}
 
 
 
