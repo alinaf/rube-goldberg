@@ -33,6 +33,8 @@
     var static3;
     var flop = true;
     var done = false;
+    var numBounces = 0;
+    var tryAgain = false;
 
     var game = new Phaser.Game(config);
     const gameState = {
@@ -48,6 +50,10 @@
 
    function create ()
    {
+
+      static1 = this.physics.add.staticImage(816, 133, 'platform').setInteractive();
+    static2 = this.physics.add.staticImage(144, 284, 'platform').setInteractive();
+    static3 = this.physics.add.staticImage(492, 197, 'platform').setInteractive();
 
     gameState.instructions = this.add.text(400, 25, 'Hit Space to Drop', { fontSize: '25px', fill: '#FFFFFF'});
     gameState.yVelocityText = this.add.text(650, 500, `Y Velocity: ${gameState.yVelocity}`, { fontSize: '25px', fill: '#FFFFFF'});
@@ -82,9 +88,7 @@
     this.physics.pause();
     gameState.sprite = this.physics.add.image(100, 100, 'square');
 
-    static1 = this.physics.add.staticImage(816, 133, 'platform').setInteractive();
-    static2 = this.physics.add.staticImage(144, 284, 'platform').setInteractive();
-    static3 = this.physics.add.staticImage(492, 197, 'platform').setInteractive();
+  
     winner = this.physics.add.staticImage(925, 45, 'square').setTint(0xAADAC5);
 
     gameState.sprite.body.setVelocity(100, 100).setBounce(1, 1).setCollideWorldBounds(true);
@@ -96,6 +100,17 @@
       this.physics.pause();
       winner.visible = false;
       done = true;
+    });
+
+       this.physics.add.collider(gameState.sprite, [ static1, static2, static3 ], () => {
+        numBounces++;
+        if (numBounces == 5) {
+          this.physics.pause();
+          numBounces = 0;
+          gameState.instructions.setText("Try again? Hit space.");
+          gameState.instructions.visible = true;
+          tryAgain = true;
+        }
     });
 
    // this.physics.add.collider(gameState.sprite, winner, function (sprite) {
@@ -148,7 +163,23 @@
 
     if (gameState.cursors.space.isDown) {
       if (!flop) {
-        if(done) {
+        if(tryAgain) {
+          gameState.xPlus.setInteractive();
+          gameState.yPlus.setInteractive();
+          gameState.xMinus.setInteractive();
+          gameState.yMinus.setInteractive();
+
+          static1.setInteractive();
+          static2.setInteractive();
+          static3.setInteractive();
+
+          done = false;
+          gameState.sprite.x = 100;
+          gameState.sprite.y = 100;
+          tryAgain = false;
+        }
+        else if(done) {
+          numBounces = 0;
           this.physics.pause();
           gameState.xPlus.setInteractive();
           gameState.yPlus.setInteractive();
